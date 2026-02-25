@@ -3,13 +3,18 @@ from rich.panel import Panel
 from rich.layout import Layout
 from rich.console import Console
 from rich import box
+from rich.text import Text
 
-def create_process_table(processes):
+def create_process_table(processes, sort_by="cpu", filter_text=""):
     """
-    Membuat tabel Rich untuk daftar proses.
+    Membuat tabel Rich untuk daftar proses dengan fitur sorting dan filtering.
     """
+    title = f"Active Processes (Sorted by {sort_by.upper()})"
+    if filter_text:
+        title += f" [Filter: '{filter_text}']"
+
     table = Table(
-        title="Active Processes",
+        title=title,
         box=box.ROUNDED,
         header_style="bold cyan",
         expand=True
@@ -20,8 +25,14 @@ def create_process_table(processes):
     table.add_column("CPU %", justify="center", style="green")
     table.add_column("RAM (MB)", justify="right", style="magenta")
 
-    # Sort proses berdasarkan CPU usage (tertinggi di atas)
-    sorted_procs = sorted(processes, key=lambda x: x['cpu_usage'], reverse=True)[:15]
+    # Filtering
+    filtered_procs = processes
+    if filter_text:
+        filtered_procs = [p for p in processes if filter_text.lower() in p['name'].lower()]
+
+    # Sorting
+    sort_key = 'cpu_usage' if sort_by == 'cpu' else 'ram_usage_mb'
+    sorted_procs = sorted(filtered_procs, key=lambda x: x[sort_key], reverse=True)[:15]
 
     for proc in sorted_procs:
         table.add_row(
@@ -44,6 +55,20 @@ def create_stats_panel(stats, uptime_str):
     )
     return Panel(content, title="[bold white]System Pulse[/bold white]", border_style="bright_blue", box=box.DOUBLE)
 
+def create_footer(sort_by, filter_text):
+    """
+    Membuat footer navigasi bantuan.
+    """
+    help_text = Text.from_markup(
+        "[bold yellow]C[/bold yellow]: Sort CPU | "
+        "[bold yellow]M[/bold yellow]: Sort RAM | "
+        "[bold yellow]F[/bold yellow]: Filter | "
+        "[bold yellow]X[/bold yellow]: Clear Filter | "
+        "[bold yellow]Q[/bold yellow]: Quit"
+    )
+    status_text = f" [Current: Sort={sort_by.upper()}, Filter='{filter_text}']"
+    return Panel(help_text + Text(status_text, style="dim italic"), border_style="dim")
+
 def create_layout():
     """
     Membuat struktur layout dasar UI.
@@ -51,6 +76,7 @@ def create_layout():
     layout = Layout()
     layout.split(
         Layout(name="header", size=3),
-        Layout(name="body")
+        Layout(name="body"),
+        Layout(name="footer", size=3)
     )
     return layout
