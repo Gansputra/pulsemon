@@ -7,7 +7,8 @@ from rich.console import Console
 from rich.prompt import Prompt
 from .process import get_active_processes, kill_process
 from .monitor import get_system_stats, format_uptime
-from .ui import create_process_table, create_stats_panel, create_layout, create_footer
+from .alerts import AlertManager
+from .ui import create_process_table, create_stats_panel, create_layout, create_footer, create_alerts_panel
 
 class PulsemonApp:
     def __init__(self):
@@ -17,10 +18,12 @@ class PulsemonApp:
         self.sort_by = "cpu"
         self.filter_text = ""
         self.status_msg = ""
+        self.alert_manager = AlertManager(cpu_threshold=85.0, ram_threshold=85.0)
         self.data = {
             "stats": None,
             "processes": [],
-            "uptime_str": "Initializing..."
+            "uptime_str": "Initializing...",
+            "alerts": []
         }
 
     def fetch_data(self):
@@ -30,10 +33,12 @@ class PulsemonApp:
                 stats = get_system_stats()
                 processes = get_active_processes()
                 uptime_str = format_uptime(stats['uptime_seconds'])
+                alerts = self.alert_manager.check_system_stats(stats)
                 
                 self.data["stats"] = stats
                 self.data["processes"] = processes
                 self.data["uptime_str"] = uptime_str
+                self.data["alerts"] = alerts
                 
             except Exception:
                 pass
@@ -77,6 +82,9 @@ class PulsemonApp:
                         if self.data["stats"]:
                             self.layout["header"].update(
                                 create_stats_panel(self.data["stats"], self.data["uptime_str"])
+                            )
+                            self.layout["alerts"].update(
+                                create_alerts_panel(self.data["alerts"])
                             )
                             self.layout["body"].update(
                                 create_process_table(self.data["processes"], self.sort_by, self.filter_text)

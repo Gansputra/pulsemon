@@ -55,6 +55,20 @@ def create_stats_panel(stats, uptime_str):
     )
     return Panel(content, title="[bold white]System Pulse[/bold white]", border_style="bright_blue", box=box.DOUBLE)
 
+def create_alerts_panel(alerts):
+    """
+    Membuat panel untuk menampilkan peringatan sistem.
+    """
+    if not alerts:
+        return Panel(Text("No active alerts", style="dim green"), title="[bold]Alerts[/bold]", border_style="green")
+    
+    alert_texts = []
+    for alert in alerts:
+        alert_texts.append(f"[{alert['time']}] [bold red]⚠ {alert['message']}[/bold red]")
+    
+    content = "\n".join(alert_texts)
+    return Panel(content, title="[bold red]System Alerts[/bold red]", border_style="red", box=box.HEAVY)
+
 def create_footer(sort_by, filter_text, status_msg=""):
     """
     Membuat footer navigasi bantuan.
@@ -85,6 +99,7 @@ def create_layout():
     layout = Layout()
     layout.split(
         Layout(name="header", size=3),
+        Layout(name="alerts", size=5),
         Layout(name="body"),
         Layout(name="footer", size=5)
     )
