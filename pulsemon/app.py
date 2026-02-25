@@ -59,6 +59,10 @@ class PulsemonApp:
                 self.sort_by = "cpu"
             elif key == 'm':
                 self.sort_by = "ram"
+            elif key == 's':
+                # Toggle between cpu and ram
+                self.sort_by = "ram" if self.sort_by == "cpu" else "cpu"
+                self.status_msg = f"Sorting diatur ke: {self.sort_by.upper()}"
             elif key == 'x':
                 self.filter_text = ""
             elif key == 'f':
@@ -91,7 +95,12 @@ class PulsemonApp:
                                 create_alerts_panel(self.data["alerts"])
                             )
                             self.layout["body"].update(
-                                create_process_table(self.data["processes"], self.sort_by, self.filter_text)
+                                create_process_table(
+                                    self.data["processes"], 
+                                    self.sort_by, 
+                                    self.filter_text,
+                                    max_rows=config.get("max_processes")
+                                )
                             )
                             self.layout["footer"].update(
                                 create_footer(self.sort_by, self.filter_text, self.status_msg)

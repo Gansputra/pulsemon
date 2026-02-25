@@ -5,7 +5,7 @@ from rich.console import Console
 from rich import box
 from rich.text import Text
 
-def create_process_table(processes, sort_by="cpu", filter_text=""):
+def create_process_table(processes, sort_by="cpu", filter_text="", max_rows=15):
     """
     Membuat tabel Rich untuk daftar proses dengan fitur sorting dan filtering.
     """
@@ -32,7 +32,7 @@ def create_process_table(processes, sort_by="cpu", filter_text=""):
 
     # Sorting
     sort_key = 'cpu_usage' if sort_by == 'cpu' else 'ram_usage_mb'
-    sorted_procs = sorted(filtered_procs, key=lambda x: x[sort_key], reverse=True)[:15]
+    sorted_procs = sorted(filtered_procs, key=lambda x: x[sort_key], reverse=True)[:max_rows]
 
     for proc in sorted_procs:
         table.add_row(
@@ -46,14 +46,14 @@ def create_process_table(processes, sort_by="cpu", filter_text=""):
 
 def create_stats_panel(stats, uptime_str):
     """
-    Membuat panel statistik sistem.
+    Membuat panel statistik sistem dengan gaya premium.
     """
     content = (
-        f"[bold blue]CPU Usage:[/bold blue] [green]{stats['cpu_percent']}%[/green] | "
-        f"[bold blue]RAM:[/bold blue] [magenta]{stats['ram']['percent']}%[/magenta] ({stats['ram']['used_gb']}/{stats['ram']['total_gb']} GB) | "
-        f"[bold blue]Uptime:[/bold blue] [yellow]{uptime_str}[/yellow]"
+        f"[bold cyan]CPU[/bold cyan] [white]━━[/white] [bold green]{stats['cpu_percent']:>5}%[/bold green]   "
+        f"[bold magenta]RAM[/bold magenta] [white]━━[/white] [bold magenta]{stats['ram']['percent']:>5}%[/bold magenta] [dim]({stats['ram']['used_gb']}/{stats['ram']['total_gb']} GB)[/dim]   "
+        f"[bold yellow]UPTIME[/bold yellow] [white]━━[/white] [bold yellow]{uptime_str}[/bold yellow]"
     )
-    return Panel(content, title="[bold white]System Pulse[/bold white]", border_style="bright_blue", box=box.DOUBLE)
+    return Panel(content, title="[bold white]⚡ PULSEMON SYSTEM MONITOR[/bold white]", border_style="bright_blue", box=box.ROUNDED)
 
 def create_alerts_panel(alerts):
     """
@@ -71,20 +71,19 @@ def create_alerts_panel(alerts):
 
 def create_footer(sort_by, filter_text, status_msg=""):
     """
-    Membuat footer navigasi bantuan.
+    Membuat footer navigasi bantuan yang lebih cantik.
     """
     help_line = Text.from_markup(
-        "[bold yellow]C[/bold yellow]: CPU | "
-        "[bold yellow]M[/bold yellow]: RAM | "
-        "[bold yellow]F[/bold yellow]: Filter | "
-        "[bold yellow]K[/bold yellow]: [bold red]Kill[/bold red] | "
-        "[bold yellow]X[/bold yellow]: Clear | "
-        "[bold yellow]Q[/bold yellow]: Quit"
+        "[bold cyan]S[/bold cyan] Sort [dim](toggle)[/dim] | "
+        "[bold cyan]F[/bold cyan] Filter | "
+        "[bold cyan]K[/bold cyan] [bold red]Kill[/bold red] | "
+        "[bold cyan]X[/bold cyan] Clear | "
+        "[bold cyan]Q[/bold cyan] Quit"
     )
     
-    current_state = f" [Dim: Sort={sort_by.upper()}, Filter='{filter_text}']"
+    current_state = f" [dim]| Sort: [bold white]{sort_by.upper()}[/bold white] | Filter: [bold white]'{filter_text or 'None'}'[/bold white][/dim]"
     
-    footer_content = help_line + Text(current_state, style="dim italic")
+    footer_content = help_line + Text(current_state)
     
     if status_msg:
         color = "green" if "Berhasil" in status_msg else "red"
