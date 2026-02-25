@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pulsemon"
+version = "0.1.0"
+description = "A modern Python CLI system monitor"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "psutil>=6.0.0",
+    "rich>=13.0.0",
+    "click>=8.1.0",
+]
+
+[project.scripts]
+pulsemon = "pulsemon.app:main"
