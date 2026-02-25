@@ -53,7 +53,7 @@ def create_stats_panel(stats, uptime_str):
         f"[bold magenta]RAM[/bold magenta] [white]━━[/white] [bold magenta]{stats['ram']['percent']:>5}%[/bold magenta] [dim]({stats['ram']['used_gb']}/{stats['ram']['total_gb']} GB)[/dim]   "
         f"[bold yellow]UPTIME[/bold yellow] [white]━━[/white] [bold yellow]{uptime_str}[/bold yellow]"
     )
-    return Panel(content, title="[bold white]⚡ PULSEMON SYSTEM MONITOR[/bold white]", border_style="bright_blue", box=box.ROUNDED)
+    return Panel(content, title="[bold white]⚡ PULSEMON SYSTEM MONITOR [dim]by GANSPUTRA[/dim][/bold white]", border_style="bright_blue", box=box.ROUNDED)
 
 def create_alerts_panel(alerts):
     """
