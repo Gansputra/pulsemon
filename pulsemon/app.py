@@ -8,6 +8,7 @@ from rich.prompt import Prompt
 from .process import get_active_processes, kill_process
 from .monitor import get_system_stats, format_uptime
 from .alerts import AlertManager
+from .config import config
 from .ui import create_process_table, create_stats_panel, create_layout, create_footer, create_alerts_panel
 
 class PulsemonApp:
@@ -15,10 +16,13 @@ class PulsemonApp:
         self.console = Console()
         self.layout = create_layout()
         self.stop_event = threading.Event()
-        self.sort_by = "cpu"
+        self.sort_by = config.get("default_sort")
         self.filter_text = ""
         self.status_msg = ""
-        self.alert_manager = AlertManager(cpu_threshold=85.0, ram_threshold=85.0)
+        self.alert_manager = AlertManager(
+            cpu_threshold=config.get("cpu_threshold"), 
+            ram_threshold=config.get("ram_threshold")
+        )
         self.data = {
             "stats": None,
             "processes": [],
@@ -43,7 +47,7 @@ class PulsemonApp:
             except Exception:
                 pass
             
-            self.stop_event.wait(1)
+            self.stop_event.wait(config.get("refresh_rate"))
 
     def handle_keyboard(self):
         """Handle non-blocking keyboard input."""
