@@ -53,7 +53,7 @@ def create_stats_panel(stats, uptime_str):
         f"[bold magenta]RAM[/bold magenta] [white]━━[/white] [bold magenta]{stats['ram']['percent']:>5}%[/bold magenta] [dim]({stats['ram']['used_gb']}/{stats['ram']['total_gb']} GB)[/dim]   "
         f"[bold yellow]UPTIME[/bold yellow] [white]━━[/white] [bold yellow]{uptime_str}[/bold yellow]"
     )
-    return Panel(content, title="[bold white]⚡ PULSEMON SYSTEM MONITOR [dim]by GANSPUTRA[/dim][/bold white]", border_style="bright_blue", box=box.ROUNDED)
+    return Panel(content, title="[bold white] PULSEMON SYSTEM MONITOR [dim]by GANSPUTRA[/dim][/bold white]", border_style="bright_blue", box=box.ROUNDED)
 
 def create_alerts_panel(alerts):
     """
@@ -71,25 +71,26 @@ def create_alerts_panel(alerts):
 
 def create_footer(sort_by, filter_text, status_msg=""):
     """
-    Membuat footer navigasi bantuan yang lebih cantik.
+    Membuat footer navigasi bantuan yang lebih mudah dipahami user.
     """
-    help_line = Text.from_markup(
-        "[bold cyan]S[/bold cyan] Sort [dim](toggle)[/dim] | "
-        "[bold cyan]F[/bold cyan] Filter | "
-        "[bold cyan]K[/bold cyan] [bold red]Kill[/bold red] | "
-        "[bold cyan]X[/bold cyan] Clear | "
-        "[bold cyan]Q[/bold cyan] Quit"
-    )
+    # Menampilkan shortcut dan state aktif secara langsung
+    sort_info = f"[bold cyan][S][/bold cyan] Sort: [bold white]{sort_by.upper()}[/bold white]"
+    filter_info = f"[bold cyan][F][/bold cyan] Filter: [bold white]{filter_text or '-'}[/bold white]"
+    kill_info = "[bold cyan][K][/bold cyan] [bold red]Kill PID[/bold red]"
+    clear_info = "[bold cyan][X][/bold cyan] Clear"
+    quit_info = "[bold cyan][Q][/bold cyan] Quit"
     
-    current_state = f" [dim]| Sort: [bold white]{sort_by.upper()}[/bold white] | Filter: [bold white]'{filter_text or 'None'}'[/bold white][/dim]"
-    
-    footer_content = help_line + Text(current_state)
+    # Gabungkan dengan separator yang bersih
+    footer_content = Text.from_markup(f"{sort_info}  │  {filter_info}  │  {kill_info}  │  {clear_info}  │  {quit_info}")
     
     if status_msg:
+        # Menambahkan pesan status dengan pemisah di bawahnya
         color = "green" if "Berhasil" in status_msg else "red"
-        footer_content += Text(f"\nStatus: {status_msg}", style=f"bold {color}")
-        
-    return Panel(footer_content, border_style="dim")
+        # Pastikan status_msg tidak terlalu panjang
+        status_line = Text.from_markup(f"\n[dim]System:[/dim] [bold {color}]{status_msg}[/bold {color}]")
+        return Panel(footer_content + status_line, border_style="dim", box=box.ROUNDED)
+    
+    return Panel(footer_content, border_style="dim", box=box.ROUNDED)
 
 def create_layout():
     """
