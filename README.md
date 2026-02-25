@@ -1,23 +1,23 @@
-# ⚡ Pulsemon
+# Pulsemon
 
 **Pulsemon** is a modern, high-performance terminal system monitor built with Python. It provides real-time insights into your system's "pulse," including CPU usage, memory consumption, and active processes, all wrapped in a beautiful, responsive CLI interface.
 
 ![Pulsemon UI Experience](https://img.shields.io/badge/UI-Modern--Rich-blueviolet?style=for-the-badge)
 ![Dependencies](https://img.shields.io/badge/built%20with-psutil%20%7C%20rich-green?style=for-the-badge)
 
-## ✨ Features
+## Features
 
-- 🚀 **Real-time Monitoring**: Smooth, flicker-free updates using multi-threaded data collection.
-- 📊 **Process Management**: View active processes with their PID, CPU, and RAM consumption.
-- ⚡ **Interactive Controls**:
+- **Real-time Monitoring**: Smooth, flicker-free updates using multi-threaded data collection.
+- **Process Management**: View active processes with their PID, CPU, and RAM consumption.
+- **Interactive Controls**:
   - **Sort**: Instantly toggle between CPU and RAM-heavy processes.
   - **Filter**: Find specific processes using live search.
   - **Kill**: Terminate unresponsive processes safely with user confirmation.
-- ⚠️ **Smart Alerts**: Dynamic visual warnings when CPU or RAM usage exceeds safety thresholds.
-- ⚙️ **Persistent Config**: Customize refresh rates, thresholds, and default settings via `config.json`.
-- 🎨 **Premium Aesthetics**: Clean, color-coded layout powered by the [Rich](https://github.com/Textualize/rich) library.
+- **Smart Alerts**: Dynamic visual warnings when CPU or RAM usage exceeds safety thresholds.
+- **Persistent Config**: Customize refresh rates, thresholds, and default settings via `config.json`.
+- **Premium Aesthetics**: Clean, color-coded layout powered by the [Rich](https://github.com/Textualize/rich) library.
 
-## 🛠️ Installation
+## Installation
 
 ### 1. Prerequisites
 - Python 3.8+
@@ -38,7 +38,7 @@ If you want to use the `pulsemon` command globally:
 pip install -e .
 ```
 
-## ⌨️ Dashboard Shortcuts
+## Dashboard Shortcuts
 
 | Key | Action |
 | :--- | :--- |
@@ -48,7 +48,7 @@ pip install -e .
 | `X` | **Clear** (Reset all filters) |
 | `Q` | **Quit** (Exit gracefully) |
 
-## ⚙️ Configuration
+## Configuration
 
 Pulsemon generates a `config.json` file in the root directory upon first run. You can manually edit it to tune the app:
 
@@ -62,8 +62,16 @@ Pulsemon generates a `config.json` file in the root directory upon first run. Yo
 }
 ```
 
-## 📜 License
+## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-Created with ❤️ by **Gansputra**
+## Connect with Me
+
+- **Editing Account**: [GexVex](https://guns.lol/Gexvex)
+- **Pinterest**: [Gansputra](https://pin.it/o8f9moE93)
+- **GitHub**: [gansputra](https://github.com/gansputra)
+
+---
+
+Developed with ❤️ by Gansputra :).
