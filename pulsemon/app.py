@@ -5,7 +5,7 @@ import sys
 from rich.live import Live
 from rich.console import Console
 from rich.prompt import Prompt
-from .process import get_active_processes
+from .process import get_active_processes, kill_process
 from .monitor import get_system_stats, format_uptime
 from .ui import create_process_table, create_stats_panel, create_layout, create_footer
 
@@ -16,6 +16,7 @@ class PulsemonApp:
         self.stop_event = threading.Event()
         self.sort_by = "cpu"
         self.filter_text = ""
+        self.status_msg = ""
         self.data = {
             "stats": None,
             "processes": [],
@@ -53,6 +54,8 @@ class PulsemonApp:
                 self.filter_text = ""
             elif key == 'f':
                 return "prompt_filter"
+            elif key == 'k':
+                return "prompt_kill"
         return None
 
     def run(self):
@@ -79,22 +82,36 @@ class PulsemonApp:
                                 create_process_table(self.data["processes"], self.sort_by, self.filter_text)
                             )
                             self.layout["footer"].update(
-                                create_footer(self.sort_by, self.filter_text)
+                                create_footer(self.sort_by, self.filter_text, self.status_msg)
                             )
                         
                         action = self.handle_keyboard()
-                        if action == "prompt_filter":
-                            # Break out of Live to take input
+                        if action in ["prompt_filter", "prompt_kill"]:
                             break
                         
                         time.sleep(0.1)
                 
-                # Check if we broke out for filtering
-                if not self.stop_event.is_set() and action == "prompt_filter":
-                    # Clear screen briefly for prompt
+                if self.stop_event.is_set():
+                    break
+
+                if action == "prompt_filter":
                     self.console.print("\n" * 5)
                     self.filter_text = Prompt.ask("[bold yellow]Enter process name to filter[/bold yellow]")
-                    # Live will restart on next iteration of outer loop
+                    self.status_msg = f"Filter diatur ke: {self.filter_text}" if self.filter_text else "Filter dihapus"
+                
+                elif action == "prompt_kill":
+                    self.console.print("\n" * 5)
+                    pid_str = Prompt.ask("[bold red]Enter PID to kill[/bold red]")
+                    try:
+                        pid = int(pid_str)
+                        confirm = Prompt.ask(f"[bold red]Are you sure you want to kill PID {pid}?[/bold red] (y/n)", choices=["y", "n"], default="n")
+                        if confirm == "y":
+                            success, msg = kill_process(pid)
+                            self.status_msg = msg
+                        else:
+                            self.status_msg = "Aksi dibatalkan"
+                    except ValueError:
+                        self.status_msg = "Error: PID harus berupa angka"
                 
         except KeyboardInterrupt:
             self.stop_event.set()

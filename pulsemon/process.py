@@ -29,3 +29,22 @@ def get_active_processes():
             continue
             
     return processes_data
+
+def kill_process(pid):
+    """
+    Menghentikan proses berdasarkan PID.
+    
+    Returns:
+        tuple (bool, str): (Berhasil/Tidak, Pesan Status)
+    """
+    try:
+        proc = psutil.Process(pid)
+        name = proc.name()
+        proc.terminate() # Mencoba menghentikan secara halus
+        return True, f"Berhasil mengirim sinyal terminasi ke {name} (PID: {pid})"
+    except psutil.NoSuchProcess:
+        return False, f"Error: Proses dengan PID {pid} tidak ditemukan."
+    except psutil.AccessDenied:
+        return False, f"Error: Akses ditolak. Izin administrator diperlukan untuk PID {pid}."
+    except Exception as e:
+        return False, f"Error: Gagal menghentikan proses: {str(e)}"

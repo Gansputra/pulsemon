@@ -55,19 +55,28 @@ def create_stats_panel(stats, uptime_str):
     )
     return Panel(content, title="[bold white]System Pulse[/bold white]", border_style="bright_blue", box=box.DOUBLE)
 
-def create_footer(sort_by, filter_text):
+def create_footer(sort_by, filter_text, status_msg=""):
     """
     Membuat footer navigasi bantuan.
     """
-    help_text = Text.from_markup(
-        "[bold yellow]C[/bold yellow]: Sort CPU | "
-        "[bold yellow]M[/bold yellow]: Sort RAM | "
+    help_line = Text.from_markup(
+        "[bold yellow]C[/bold yellow]: CPU | "
+        "[bold yellow]M[/bold yellow]: RAM | "
         "[bold yellow]F[/bold yellow]: Filter | "
-        "[bold yellow]X[/bold yellow]: Clear Filter | "
+        "[bold yellow]K[/bold yellow]: [bold red]Kill[/bold red] | "
+        "[bold yellow]X[/bold yellow]: Clear | "
         "[bold yellow]Q[/bold yellow]: Quit"
     )
-    status_text = f" [Current: Sort={sort_by.upper()}, Filter='{filter_text}']"
-    return Panel(help_text + Text(status_text, style="dim italic"), border_style="dim")
+    
+    current_state = f" [Dim: Sort={sort_by.upper()}, Filter='{filter_text}']"
+    
+    footer_content = help_line + Text(current_state, style="dim italic")
+    
+    if status_msg:
+        color = "green" if "Berhasil" in status_msg else "red"
+        footer_content += Text(f"\nStatus: {status_msg}", style=f"bold {color}")
+        
+    return Panel(footer_content, border_style="dim")
 
 def create_layout():
     """
@@ -77,6 +86,6 @@ def create_layout():
     layout.split(
         Layout(name="header", size=3),
         Layout(name="body"),
-        Layout(name="footer", size=3)
+        Layout(name="footer", size=5)
     )
     return layout
